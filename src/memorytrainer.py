@@ -14,6 +14,7 @@ class StatusEnum(str, Enum):
     NOT_STARTED = 'not started'
     PASS = 'pass'
     FAIL = 'fail'
+    DONE = 'done'
 
 
 class MemoryTrainer:

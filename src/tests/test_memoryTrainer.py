@@ -5,10 +5,13 @@ from memorytrainer import MemoryTrainer, StatusEnum
 
 
 class TestMemoryTrainer(TestCase):
+    @staticmethod
+    def get_test_training_set():
+        return {'1 + 1', '2 + 2', '3 + 3'}
 
     def setUp(self) -> None:
         super().setUp()
-        self.training_set = {'1 + 1', '2 + 2', '3 + 3'}
+        self.training_set = TestMemoryTrainer.get_test_training_set()
         self.trainer = MemoryTrainer.from_training_set(self.training_set)
 
     def test_build_record(self):
