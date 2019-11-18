@@ -10,8 +10,8 @@ from memorymanager import MemoryManager
 class TestMemoryManager(TestCase):
     def test_green(self):
         # given
-        training_set = TestMemoryTrainer.get_test_training_set()
-        trainer = MemoryTrainer.from_training_set(training_set)
+        question_set = TestMemoryTrainer.get_test_question_set()
+        trainer = MemoryTrainer.from_question_set(question_set)
 
         # when
         trainer.upsert_record('1 + 1', 1, datetime(2019, 1, 1), StatusEnum.PASS)
@@ -34,8 +34,8 @@ class TestMemoryManager(TestCase):
 
     def test_red(self):
         # given
-        training_set = TestMemoryTrainer.get_test_training_set()
-        trainer = MemoryTrainer.from_training_set(training_set)
+        question_set = TestMemoryTrainer.get_test_question_set()
+        trainer = MemoryTrainer.from_question_set(question_set)
 
         # when
         trainer.upsert_record('1 + 1', 1, datetime(2019, 1, 1), StatusEnum.PASS)

@@ -28,9 +28,9 @@ class MemoryTrainer:
         return self._training_log
 
     @classmethod
-    def from_training_set(cls, training_set: Set[str]) -> 'MemoryTrainer':
+    def from_question_set(cls, question_set: Set[str]) -> 'MemoryTrainer':
         trainer = cls()
-        for question in training_set:
+        for question in question_set:
             trainer._training_log[question] = []
         return trainer
 

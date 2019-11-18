@@ -6,13 +6,13 @@ from memorytrainer import MemoryTrainer, StatusEnum
 
 class TestMemoryTrainer(TestCase):
     @staticmethod
-    def get_test_training_set():
+    def get_test_question_set():
         return {'1 + 1', '2 + 2', '3 + 3'}
 
     def setUp(self) -> None:
         super().setUp()
-        self.training_set = TestMemoryTrainer.get_test_training_set()
-        self.trainer = MemoryTrainer.from_training_set(self.training_set)
+        self.question_set = TestMemoryTrainer.get_test_question_set()
+        self.trainer = MemoryTrainer.from_question_set(self.question_set)
 
     def test_build_record(self):
         # given
@@ -23,11 +23,11 @@ class TestMemoryTrainer(TestCase):
         # then
         self.assertEqual(record, {'level': 3, 'date': '20190101', 'status': StatusEnum.FAIL})
 
-    def test_from_training_set(self):
+    def test_from_question_set(self):
         # given
         # when
         # then
-        for k in self.training_set:
+        for k in self.question_set:
             self.assertTrue(k in self.trainer.training_log.keys())
 
     def test_persist_load(self):

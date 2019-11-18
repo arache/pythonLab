@@ -1,7 +1,7 @@
 from typing import Set
 
 
-def get_training_set() -> Set[str]:
+def get_question_set() -> Set[str]:
     _result = set()
     for i in range(1, 20):
         for j in range(1, 20):
@@ -13,4 +13,4 @@ def get_training_set() -> Set[str]:
 
 
 if __name__ == '__main__':
-    print(get_training_set())
+    print(get_question_set())
