@@ -19,7 +19,7 @@ class MemoryManager:
             if last[Constant.STATUS] == StatusEnum.NOT_STARTED:
                 last[Constant.STATUS] = StatusEnum.PASS
                 next_level = last[Constant.LEVEL] + 1
-                next_date = datetime.strptime(last[Constant.DATE], '%Y%m%d') + timedelta(days=self.rule[next_level])
+                next_date = today + timedelta(days=self.rule[next_level])
                 self.trainer.upsert_record(question, last[Constant.LEVEL] + 1, next_date, StatusEnum.NOT_STARTED)
             else:
                 raise ValueError(f"It should not be in status of {last[Constant.STATUS]}")
@@ -37,7 +37,7 @@ class MemoryManager:
                 raise ValueError(f"{question} is already done, can not apply fail")
             if last[Constant.STATUS] == StatusEnum.NOT_STARTED:
                 last[Constant.STATUS] = StatusEnum.FAIL
-                next_date = datetime.strptime(last[Constant.DATE], '%Y%m%d') + timedelta(days=self.rule[1])
+                next_date = today + timedelta(days=self.rule[1])
                 self.trainer.upsert_record(question, 1, next_date, StatusEnum.NOT_STARTED)
             else:
                 raise ValueError(f"It should not be in status of {last[Constant.STATUS]}")
