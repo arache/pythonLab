@@ -1,10 +1,13 @@
 import json
-from enum import Enum
 from datetime import datetime
-from typing import Set, Dict, List, Any
+from enum import Enum
+from typing import Dict, List
 
 
 class Constant:
+    ID = 'id'
+    CONTENT = 'content'
+    RECORDS = 'records'
     LEVEL = 'level'
     DATE = 'date'
     STATUS = 'status'
@@ -20,18 +23,18 @@ class StatusEnum(str, Enum):
 class MemoryTrainer:
 
     def __init__(self) -> None:
-        # {question, ['level', 'date', 'status']}
-        self._training_log: Dict[str, List[Dict[str, Any]]] = {}
+        # {1: {'content': '1 + 1', 'records': ['level': 1, 'date': '20190101', 'status': 'pass']]}}
+        self._training_log: Dict[str, Dict[str, str or List]] = {}
 
     @property
     def training_log(self):
         return self._training_log
 
     @classmethod
-    def from_question_set(cls, question_set: Set[str]) -> 'MemoryTrainer':
+    def from_question_dict(cls, question_dict: Dict[str, str]) -> 'MemoryTrainer':
         trainer = cls()
-        for question in question_set:
-            trainer._training_log[question] = []
+        for _id, question in question_dict.items():
+            trainer._training_log[_id] = {Constant.CONTENT: question, Constant.RECORDS: []}
         return trainer
 
     @classmethod
@@ -45,15 +48,15 @@ class MemoryTrainer:
         with open(file, 'w') as f:
             json.dump(self.training_log, f, indent=4)
 
-    def upsert_record(self, question: str, level: int, date: datetime, status: StatusEnum):
+    def upsert_record(self, _id: str, level: int, date: datetime, status: StatusEnum):
         # no record before
-        if not self.training_log[question]:
-            self.training_log[question].append(MemoryTrainer.build_record(level, date, status))
+        if not self.training_log[_id][Constant.RECORDS]:
+            self.training_log[_id][Constant.RECORDS].append(MemoryTrainer.build_record(level, date, status))
             return
 
         # already some records there
         data_new = date.strftime('%Y%m%d')
-        last_one = self.training_log[question][-1]
+        last_one = self.training_log[_id][Constant.RECORDS][-1]
         if last_one[Constant.DATE] > data_new:
             raise ValueError(
                 f"Time never goes back, can not change {data_new} while the last one is {last_one[Constant.DATE]}")
@@ -62,7 +65,7 @@ class MemoryTrainer:
             last_one[Constant.LEVEL] = level
             last_one[Constant.STATUS] = status
         else:
-            self.training_log[question].append(MemoryTrainer.build_record(level, date, status))
+            self.training_log[_id][Constant.RECORDS].append(MemoryTrainer.build_record(level, date, status))
 
     @staticmethod
     def build_record(level: int, date: datetime, status: StatusEnum):
