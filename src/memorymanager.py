@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 
 from memorytrainer import MemoryTrainer, Constant, StatusEnum
 
@@ -46,22 +46,28 @@ class MemoryManager:
             next_date = today + timedelta(days=self.rule[1])
             self.trainer.upsert_record(_id, 1, next_date, StatusEnum.NOT_STARTED)
 
-    def get_question_set(self) -> List[str]:
-        return list(self.trainer.training_log.keys())
+    def get_question_list(self) -> Dict[str, str]:
+        _result = {}
+        for _id, question in self.trainer.training_log.items():
+            _result[_id] = question[Constant.CONTENT]
+        return _result
 
-    def get_today_question_list(self) -> List[str]:
-        _result = []
-        for question, records in self.trainer.training_log.items():
-            if not records:
-                _result.append(question)
+    def get_today_question_list(self) -> Dict[str, str]:
+        _result = {}
+        for _id, question in self.trainer.training_log.items():
+            if not question[Constant.RECORDS]:
+                _result[_id] = question[Constant.CONTENT]
                 continue
 
-            last = records[-1]
+            last = question[Constant.RECORDS][-1]
             if last[Constant.DATE] == datetime.now().strftime('%Y%m%d') and \
                     last[Constant.STATUS] == StatusEnum.NOT_STARTED:
-                _result.append(question)
+                _result[_id] = question[Constant.CONTENT]
 
         return _result
+
+    def get_history(self):
+        return self.trainer.training_log
 
     def persist(self, file):
         self.trainer.persist_record(file)
