@@ -29,7 +29,15 @@ trainer = MemoryTrainer.from_json_dump_file(file)
 manager = MemoryManager(trainer)
 
 
-class QuestionHandler(RequestHandler, ABC):
+class BaseHandler(RequestHandler, ABC):
+
+    def set_default_headers(self) -> None:
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+
+class QuestionHandler(BaseHandler, ABC):
     def get(self):
         path = self.request.path
         if path == "/questions/get":
@@ -60,12 +68,12 @@ class QuestionHandler(RequestHandler, ABC):
         self.write(f"red {question} OK")
 
 
-class HistoryHandler(RequestHandler, ABC):
+class HistoryHandler(BaseHandler, ABC):
     def get(self):
-        self.write(manager.get_history())
+        self.write(json.dumps(manager.get_history()))
 
 
-class NewHandler(RequestHandler, ABC):
+class NewHandler(BaseHandler, ABC):
     def get(self):
         global trainer, manager
         trainer = MemoryTrainer.from_question_dict(get_question_dict())
