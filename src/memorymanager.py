@@ -18,6 +18,7 @@ class MemoryManager:
                 return
             if last[Constant.STATUS] == StatusEnum.NOT_STARTED:
                 last[Constant.STATUS] = StatusEnum.PASS
+                last[Constant.DATE] = today.strftime('%Y%m%d')
                 next_level = last[Constant.LEVEL] + 1
                 next_date = today + timedelta(days=self.rule[next_level])
                 self.trainer.upsert_record(_id, last[Constant.LEVEL] + 1, next_date, StatusEnum.NOT_STARTED)
@@ -37,6 +38,7 @@ class MemoryManager:
                 raise ValueError(f"{_id} is already done, can not apply fail")
             if last[Constant.STATUS] == StatusEnum.NOT_STARTED:
                 last[Constant.STATUS] = StatusEnum.FAIL
+                last[Constant.DATE] = today.strftime('%Y%m%d')
                 next_date = today + timedelta(days=self.rule[1])
                 self.trainer.upsert_record(_id, 1, next_date, StatusEnum.NOT_STARTED)
             else:
